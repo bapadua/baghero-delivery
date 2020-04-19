@@ -4,10 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DeliverControlApplication {
-
+public class DeliveryControlApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(DeliverControlApplication.class, args);
+		SpringApplication.run(DeliveryControlApplication.class, args);
 	}
 
 }

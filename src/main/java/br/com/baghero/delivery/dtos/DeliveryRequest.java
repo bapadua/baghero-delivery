@@ -22,4 +22,8 @@ public class DeliveryRequest implements Serializable {
     private LocalDate end;
     private String value;
     private DeliveryStatus status;
+
+    public String getStatus() {
+        return this.status.name();
+    }
 }
