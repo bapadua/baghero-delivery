@@ -11,7 +11,7 @@
 	<groupId>br.com.baghero</groupId>
 	<artifactId>baghero-delivery-control</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>deliver-control</name>
+	<name>delivery-control</name>
 	<description>Controle de entregas</description>
 
 	<properties>
