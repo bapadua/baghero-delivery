@@ -1,13 +1,13 @@
 package br.com.baghero.delivery;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DeliverControlApplicationTests {
+public class DeliveryControlApplicationTests {
 
 	@Test
-	void contextLoads() {
-	}
+	public void Test() {
 
+	}
 }
