@@ -2,6 +2,8 @@ package br.com.baghero.delivery.controllers;
 
 import br.com.baghero.delivery.dtos.DeliveryRequest;
 import br.com.baghero.delivery.services.DeliveryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("delivery")
+@Api(value = "Delivery", tags = {"delivery"})
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
@@ -22,6 +25,7 @@ public class DeliveryController {
     }
 
     @PostMapping
+    @ApiOperation(value = "Registra uma nova locação")
     public ResponseEntity<?> register(@RequestBody DeliveryRequest request) {
         try {
             log.info("\n {} \n",request.toString());
