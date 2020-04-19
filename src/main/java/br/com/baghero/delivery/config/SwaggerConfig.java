@@ -32,7 +32,7 @@ public class SwaggerConfig {
 						new Tag("delivery", "Controller  responsável pelos serviços para o usuario final")
 				)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage("br.com.baghero.delivery"))
+				.apis(RequestHandlerSelectors.basePackage("br.com.baghero"))
 				.paths(PathSelectors.any())
 				.build()
 				.pathMapping("/");
