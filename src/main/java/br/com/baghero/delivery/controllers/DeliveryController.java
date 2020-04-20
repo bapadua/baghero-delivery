@@ -1,16 +1,17 @@
 package br.com.baghero.delivery.controllers;
 
 import br.com.baghero.delivery.dtos.DeliveryRequest;
+import br.com.baghero.delivery.entity.QrCode;
 import br.com.baghero.delivery.services.DeliveryService;
+import br.com.baghero.delivery.services.QrCodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
+    private final QrCodeService qrCodeService;
 
-    public DeliveryController(DeliveryService deliveryService) {
+    public DeliveryController(DeliveryService deliveryService, QrCodeService qrCodeService) {
         this.deliveryService = deliveryService;
+        this.qrCodeService = qrCodeService;
     }
 
     @PostMapping
@@ -29,12 +32,19 @@ public class DeliveryController {
     public ResponseEntity<?> register(@RequestBody DeliveryRequest request) {
         try {
             log.info("\n {} \n",request.toString());
-            deliveryService.register(request);
+            final String register = deliveryService.register(request);
             log.info("registro gravado {}", request.getProduct());
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(register, HttpStatus.OK);
         } catch (Exception e) {
             log.error("erro {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.OK);
         }
+    }
+
+    @GetMapping(value = "{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getQrcode(@PathVariable String id) {
+        QrCode qrcode = qrCodeService.getFile(id);
+        ByteArrayResource resource = new ByteArrayResource(qrcode.getData());
+        return new ResponseEntity<>(resource.getByteArray(), HttpStatus.OK);
     }
 }
