@@ -90,8 +90,11 @@ public class QrCodeServiceImpl implements QrCodeService {
 			log.error("qrcode error {}", e.getMessage());
 		}
 
-		if (qrCode.delete()) {
+		try {
+			qrCode.delete();
 			log.info("temp file deleted successfully");
+		} catch (Exception e) {
+			log.error("erro ao deletar arquivo {}", e.getMessage());
 		}
 		return file;
 
