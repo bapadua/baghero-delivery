@@ -113,6 +113,10 @@ public class QrCodeServiceImpl implements QrCodeService {
 				throw new RuntimeException();
 //	                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
 			}
+			Path paths = Paths.get("/images/generated");
+			if(!Files.exists(paths)) {
+				Files.createDirectories(paths);
+			}
 
 			QrCode qrCode = new QrCode(fileName, token, PNG, file.getBytes());
 			qrCode.setToken(token);
