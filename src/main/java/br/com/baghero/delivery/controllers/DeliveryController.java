@@ -42,6 +42,7 @@ public class DeliveryController {
     }
 
     @GetMapping(value = "{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    @ApiOperation(value = "Qr Code para atualizar o status da locação")
     public ResponseEntity<byte[]> getQrcode(@PathVariable String id) {
         QrCode qrcode = qrCodeService.getFile(id);
         ByteArrayResource resource = new ByteArrayResource(qrcode.getData());
