@@ -28,7 +28,8 @@ public class DeliveryServiceImpl implements DeliveryService {
     public String register(DeliveryRequest request) {
         log.info("gravando nova locação {}", request.getStatus());
         final QrCode qrCode = qrCodeService.createQrcodefile(TOTP.getToken(request.getId()));
-        return repository.save(mapper(request, qrCode)).getId();
+        final String id = repository.save(mapper(request, qrCode)).getId();
+        return id;
     }
 
     private LocationDelivery mapper(DeliveryRequest request, QrCode qrCode) {

@@ -27,7 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -60,7 +60,7 @@ public class QrCodeServiceImpl implements QrCodeService {
 		QrCode file = null;
 		try {
 
-			Map<EncodeHintType, Object> hintMap = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+			Map<EncodeHintType, Object> hintMap = new EnumMap<>(EncodeHintType.class);
 			hintMap.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 			hintMap.put(EncodeHintType.MARGIN, 1);
 			hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
@@ -85,13 +85,11 @@ public class QrCodeServiceImpl implements QrCodeService {
 			}
 			
 			ImageIO.write(image, PNG, qrCode);
-			file = storeFile(convert2Multifile(token, filePath, PNG), token);
-		} catch (WriterException e) {
-			log.error("qrcode error {}", e.getMessage());
-		} catch (IOException e) {
+			file = storeFile(convert2Multifile(token, filePath), token);
+		} catch (WriterException | IOException e) {
 			log.error("qrcode error {}", e.getMessage());
 		}
-		
+
 		if (qrCode.delete()) {
 			log.info("temp file deleted successfully");
 		}
@@ -99,23 +97,18 @@ public class QrCodeServiceImpl implements QrCodeService {
 
 	}
 
-	private MockMultipartFile convert2Multifile(String token, String filePath, String fileType) throws IOException {
+	private MockMultipartFile convert2Multifile(String token, String filePath) throws IOException {
 		Path path = Paths.get(filePath);
 		byte[] data = Files.readAllBytes(path);
-		MockMultipartFile file = new MockMultipartFile(token, data);
-		return file;
+		return new MockMultipartFile(token, data);
 	}
 
 	public QrCode storeFile(MultipartFile file, String token) {
-		String fileName = StringUtils.cleanPath(Optional.ofNullable(file.getOriginalFilename()).orElse("file"));
+		String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 		try {
 			if (fileName.contains("..")) {
 				throw new RuntimeException();
 //	                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
-			}
-			Path paths = Paths.get("/images/generated");
-			if(!Files.exists(paths)) {
-				Files.createDirectories(paths);
 			}
 
 			QrCode qrCode = new QrCode(fileName, token, PNG, file.getBytes());
@@ -129,6 +122,6 @@ public class QrCodeServiceImpl implements QrCodeService {
 
 	@Override
 	public QrCode getFile(String fileId) {
-		return qrCodeRepository.findById(fileId).orElseThrow(RuntimeException::new);
+		return locationDeliveryRepository.findByIdAndStatus(fileId).orElseThrow(RuntimeException::new);
 	}
 }
