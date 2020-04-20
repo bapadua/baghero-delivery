@@ -129,6 +129,6 @@ public class QrCodeServiceImpl implements QrCodeService {
 
 	@Override
 	public QrCode getFile(String fileId) {
-		return locationDeliveryRepository.findByIdAndStatus(fileId).orElseThrow(RuntimeException::new);
+		return qrCodeRepository.findById(fileId).orElseThrow(RuntimeException::new);
 	}
 }
