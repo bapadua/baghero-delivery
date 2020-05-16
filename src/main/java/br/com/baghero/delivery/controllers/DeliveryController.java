@@ -48,4 +48,12 @@ public class DeliveryController {
         ByteArrayResource resource = new ByteArrayResource(qrcode.getData());
         return new ResponseEntity<>(resource.getByteArray(), HttpStatus.OK);
     }
+
+    @GetMapping(value = "mock/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    @ApiOperation(value = "Qr Code para atualizar o status da locação")
+    public ResponseEntity<byte[]> mock(@PathVariable String id) {
+        final QrCode qrcodefile = qrCodeService.createQrcodefile(id);
+        ByteArrayResource resource = new ByteArrayResource(qrcodefile.getData());
+        return new ResponseEntity<>(resource.getByteArray(), HttpStatus.OK);
+    }
 }
