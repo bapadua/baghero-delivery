@@ -16,6 +16,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -35,9 +36,8 @@ public class QrCodeServiceImpl implements QrCodeService {
 
 	private static final String IMG_EXTENSION = ".png";
 	private static final String PNG = "png";
-
-	@Value("${qrcode.resolver}")
-	private String qrcodeResolver;
+	public static final String RETIRADA = "retirada/";
+	public static final String DELIVERY = "delivery/";
 
 	@Value("${qrcode.path}")
 	private String imagePath;
@@ -52,9 +52,15 @@ public class QrCodeServiceImpl implements QrCodeService {
 
 	@Override
 	public QrCode createQrcodefile(final String token) {
-		String uri = qrcodeResolver.concat(token);
 		String filePath = imagePath.concat(token)
 				.concat(IMG_EXTENSION);
+
+		final String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path(DELIVERY)
+				.path(RETIRADA)
+				.path(token)
+				.toUriString();
+
 		int size = 250;
 		File qrCode = new File(filePath);
 		QrCode file = null;
