@@ -16,7 +16,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -36,8 +35,6 @@ public class QrCodeServiceImpl implements QrCodeService {
 
 	private static final String IMG_EXTENSION = ".png";
 	private static final String PNG = "png";
-	public static final String RETIRADA = "retirada/";
-	public static final String DELIVERY = "delivery/";
 
 	@Value("${qrcode.path}")
 	private String imagePath;
@@ -55,12 +52,6 @@ public class QrCodeServiceImpl implements QrCodeService {
 		String filePath = imagePath.concat(token)
 				.concat(IMG_EXTENSION);
 
-		final String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-				.path(DELIVERY)
-				.path(RETIRADA)
-				.path(token)
-				.toUriString();
-
 		int size = 250;
 		File qrCode = new File(filePath);
 		QrCode file = null;
@@ -72,7 +63,7 @@ public class QrCodeServiceImpl implements QrCodeService {
 			hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
 			QRCodeWriter qrCodeWriter = new QRCodeWriter();
-			BitMatrix byteMatrix = qrCodeWriter.encode(uri, BarcodeFormat.QR_CODE, size, size, hintMap);
+			BitMatrix byteMatrix = qrCodeWriter.encode(token, BarcodeFormat.QR_CODE, size, size, hintMap);
 			int CrunchifyWidth = byteMatrix.getWidth();
 			BufferedImage image = new BufferedImage(CrunchifyWidth, CrunchifyWidth, BufferedImage.TYPE_INT_RGB);
 			image.createGraphics();
