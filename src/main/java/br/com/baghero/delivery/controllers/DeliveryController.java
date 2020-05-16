@@ -56,4 +56,11 @@ public class DeliveryController {
         ByteArrayResource resource = new ByteArrayResource(qrcodefile.getData());
         return new ResponseEntity<>(resource.getByteArray(), HttpStatus.OK);
     }
+
+    @PostMapping("retirada/{id}")
+    @ApiOperation("Informa a retirada de um produto")
+    public ResponseEntity<String> delivery(@PathVariable("id") String id) {
+        log.info("\n produto \n {} \n retirado:", id);
+        return ResponseEntity.ok(id);
+    }
 }
