@@ -20,8 +20,12 @@ import java.time.LocalDateTime;
 public class LocationDelivery implements Serializable {
 
     @Id
-    private String id;
+    @Column(name = "location_id", unique = true)
+    private String location;
+
+    @Column(name = "product_id", nullable = false)
     private String product;
+
     private LocalDateTime createdAt;
     private LocalDate start;
     private LocalDate end;

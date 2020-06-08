@@ -6,7 +6,7 @@ import br.com.baghero.delivery.entity.QrCode;
 import br.com.baghero.delivery.repository.LocationDeliveryRepository;
 import br.com.baghero.delivery.services.DeliveryService;
 import br.com.baghero.delivery.services.QrCodeService;
-import br.com.baghero.delivery.token.TOTP;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,27 +14,24 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final LocationDeliveryRepository repository;
     private final QrCodeService qrCodeService;
 
-    public DeliveryServiceImpl(LocationDeliveryRepository repository, QrCodeService qrCodeService) {
-        this.qrCodeService = qrCodeService;
-        this.repository = repository;
-    }
 
     @Override
-    public String register(DeliveryRequest request) {
-        log.info("gravando nova locação {}", request.getStatus());
-        final QrCode qrCode = qrCodeService.createQrcodefile(TOTP.getToken(request.getId()));
-        final String id = repository.save(mapper(request, qrCode)).getId();
-        return id;
+    public void register(DeliveryRequest request) {
+        final QrCode qrCode = qrCodeService.createQrcodefile(request.getLocation());
+        final LocationDelivery delivery = mapper(request, qrCode);
+        repository.save(delivery);
+        log.info("locacao");
     }
 
     private LocationDelivery mapper(DeliveryRequest request, QrCode qrCode) {
         return LocationDelivery.builder()
-                .id(request.getId())
+                .location(request.getLocation())
                 .createdAt(LocalDateTime.now())
                 .product(request.getProduct())
                 .start(request.getStart())

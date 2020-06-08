@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface LocationDeliveryRepository extends JpaRepository<LocationDelivery, String> {
 
-    @Query("SELECT l.qrCode FROM LocationDelivery l WHERE l.id = :id AND l.status = '0'")
-    Optional<QrCode> findByIdAndStatus(@Param("id") String id);
+    @Query("SELECT l.qrCode FROM LocationDelivery l WHERE l.location = :id")
+    Optional<QrCode> findQrCode(@Param("id") String id);
+
 }

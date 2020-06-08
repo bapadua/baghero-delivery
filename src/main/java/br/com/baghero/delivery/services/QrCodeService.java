@@ -4,8 +4,5 @@ import br.com.baghero.delivery.entity.QrCode;
 
 public interface QrCodeService {
 
-	QrCode createQrcodefile(String id);
-
-	QrCode getFile(String fileId);
-
+	QrCode createQrcodefile(String locationId);
 }

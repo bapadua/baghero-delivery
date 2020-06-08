@@ -7,19 +7,25 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter @Setter
 public class DeliveryRequest implements Serializable {
     private final static long serialVersionUID = 1L;
 
-    private String id;
+    private String user;
+    @NotBlank
+    private String location;
+    @NotBlank
     private String product;
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonFormat(pattern="dd-MM-yyyy")

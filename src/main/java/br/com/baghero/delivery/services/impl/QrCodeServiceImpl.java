@@ -10,6 +10,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
@@ -31,6 +32,7 @@ import java.util.Objects;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class QrCodeServiceImpl implements QrCodeService {
 
 	private static final String IMG_EXTENSION = ".png";
@@ -42,14 +44,9 @@ public class QrCodeServiceImpl implements QrCodeService {
 	private final QrCodeRepository qrCodeRepository;
 	private final LocationDeliveryRepository locationDeliveryRepository;
 
-	public QrCodeServiceImpl(QrCodeRepository qrCodeRepository, LocationDeliveryRepository locationDeliveryRepository) {
-		this.qrCodeRepository = qrCodeRepository;
-		this.locationDeliveryRepository = locationDeliveryRepository;
-	}
-
 	@Override
-	public QrCode createQrcodefile(final String token) {
-		String filePath = imagePath.concat(token)
+	public QrCode createQrcodefile(String locationId) {
+		String filePath = imagePath.concat(locationId)
 				.concat(IMG_EXTENSION);
 
 		int size = 250;
@@ -63,7 +60,7 @@ public class QrCodeServiceImpl implements QrCodeService {
 			hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
 			QRCodeWriter qrCodeWriter = new QRCodeWriter();
-			BitMatrix byteMatrix = qrCodeWriter.encode(token, BarcodeFormat.QR_CODE, size, size, hintMap);
+			BitMatrix byteMatrix = qrCodeWriter.encode(locationId, BarcodeFormat.QR_CODE, size, size, hintMap);
 			int CrunchifyWidth = byteMatrix.getWidth();
 			BufferedImage image = new BufferedImage(CrunchifyWidth, CrunchifyWidth, BufferedImage.TYPE_INT_RGB);
 			image.createGraphics();
@@ -82,7 +79,7 @@ public class QrCodeServiceImpl implements QrCodeService {
 			}
 			
 			ImageIO.write(image, PNG, qrCode);
-			file = storeFile(convert2Multifile(token, filePath), token);
+			file = storeFile(convert2Multifile(locationId, filePath), locationId);
 		} catch (WriterException | IOException e) {
 			log.error("qrcode error {}", e.getMessage());
 		}
@@ -107,21 +104,15 @@ public class QrCodeServiceImpl implements QrCodeService {
 		String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 		try {
 			if (fileName.contains("..")) {
-				throw new RuntimeException();
-//	                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+				throw new RuntimeException("nome de arquivo invalido");
 			}
 
 			QrCode qrCode = new QrCode(fileName, token, PNG, file.getBytes());
 			qrCode.setToken(token);
 			return qrCodeRepository.save(qrCode);
 		} catch (IOException ex) {
-			throw new RuntimeException();
-//	            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
+			log.error(ex.getMessage());
+			return null;
 		}
-	}
-
-	@Override
-	public QrCode getFile(String fileId) {
-		return locationDeliveryRepository.findByIdAndStatus(fileId).orElseThrow(RuntimeException::new);
 	}
 }

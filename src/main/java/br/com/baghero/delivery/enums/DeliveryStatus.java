@@ -1,6 +1,11 @@
 package br.com.baghero.delivery.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum DeliveryStatus {
+
+    EXTRAVIADO("Produto extraviado"),
     PENDENTE("Produto com entrega pendente"),
     PRODUTO_RETIRADO("Produto retirado pelo locatário"),
     PRODUTO_ENTREGUE("Produto devolvido ao locador");
@@ -11,7 +16,4 @@ public enum DeliveryStatus {
         this.status = status;
     }
 
-    public String getStatus() {
-        return this.status;
-    }
 }
